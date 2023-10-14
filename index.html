@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPtools</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body style="height: 100%">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div style="width: 700px; height: 500px; --bs-border-opacity: 1; padding: 50px;" class="rounded border border-3">
+            <h1 class="h1">IPTools</h1>
+            <h5 class="h5">Тип IP</h3>
+            <div style="display: flex;">
+                <input class="form-check-input" type="radio" name="IpType" id="IPv6">
+                <label style="margin-left: 5px;" class="form-check-label" for="IPv6">
+                    IPv6
+                </label>
+                <input style="margin-left: 20px;" class="form-check-input" type="radio" name="IpType" id="IPv4">
+                <label style="margin-left: 5px;" class="form-check-label" for="IPv4">
+                    IPv4
+                </label>
+            </div>
+            <div style="margin-top: 10px;" class="input-group mb-3">
+                <input id="ip" class="form-control" placeholder="IP адрес" aria-label="IP адрес">
+            </div>
+            <button id="getinfo" type="button" class="btn btn-primary">Получить информацию</button>
+
+
+            <div style="margin-top: 30px; opacity: 0;" id="info">
+                <div style="opacity: 0;" id="forv4">
+
+                    <div class="text-wrapper"><p class="fw-bold">В двоичной системе: </p> <p id="base2rep"></p></div>
+                    <div class="text-wrapper"><p class="fw-bold">Тип: </p> <p id="type"></p></div>
+                </div>
+                <div class="text-wrapper"><p class="fw-bold">Net id:</p> <p class="text" id="netid"></p></div>
+                <div class="text-wrapper"><p class="fw-bold">Host id:</p> <p class="text" id="hostid"></p></div>
+
+                
+    
+            </div>
+
+        </div>
+    </div>
+    <script>
+        button = document.querySelector("#getinfo")
+        ipv6 = document.querySelector("#IPv6")
+        errortext = document.querySelector("#errortxt")
+        ip = document.querySelector("#ip")
+        base2 = document.querySelector("#base2rep")
+        type = document.querySelector("#type")
+        info = document.querySelector("#info")
+        forv4 = document.querySelector("#forv4")
+        netid = document.querySelector("#netid")
+        hostid = document.querySelector("#hostid")
+        button.addEventListener('click', function(){
+            if(!ipv6.checked)
+            {
+                forv4.style.opacity = 1
+                let typeletter = ""
+                let base2rep = ""
+                let splitvalue = 0
+                value = ip.value.split(".")
+                if(parseInt(value[0]) >= 1 && parseInt(value[0]) <= 127)
+                {
+                    typeletter = "A"
+                    splitvalue = 1
+                }
+                if(parseInt(value[0]) >= 128 && parseInt(value[0]) <= 191)
+                {
+                    typeletter = "B"
+                    splitvalue = 2
+                }
+                if(parseInt(value[0]) >= 192 && parseInt(value[0]) <= 225)
+                {
+                    typeletter = "C"
+                    splitvalue = 3
+                }
+                net = ""
+                for(let i = 0; i < splitvalue; i++)
+                {
+                    net += value[i] + " "
+                }
+                host = ""
+                for(let i = splitvalue; i < value.length; i++)
+                {
+                    element = parseInt(value[i]).toString(2)
+                    newel = ""
+                    for(let i = 0; i < 8 - element.length; i++)
+                    {
+                        newel += "0"
+                    }
+                    host += newel+element
+                }
+                console.log(host)
+                host = parseInt(host, 2)
+
+
+
+                value.forEach(element => {
+                    element = parseInt(element).toString(2)
+                    newel = ""
+                    for(let i = 0; i < 8 - element.length; i++)
+                    {
+                        newel += "0"
+                    }
+                    base2rep += newel+element+ " "
+                });
+                base2.innerHTML = base2rep
+                hostid.innerHTML = host
+                netid.innerHTML = net
+                type.innerHTML = typeletter
+            }
+            if(ipv6.checked)
+            {
+                value = ip.value.split(":")
+                let net = "";
+                for(let i = 0; i < 4; i++)
+                {
+                    net += value[i] + ":"
+                }
+                net+=":"
+                netid.innerHTML = net;
+                let host = "";
+                for(let i = 3; i < value.length; i++)
+                {
+                    host += value[i]
+                }
+                hostid.innerHTML = parseInt(host, 16)
+            }
+            info.style.opacity = 1
+        })
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
